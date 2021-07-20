@@ -3,10 +3,7 @@ import routes from './routes/image-processing';
 
 const app = express();
 
-app.use('/', routes, function (req, res, next) {
-  res.sendStatus(200);
-  next();
-});
+app.use('/', routes, function (req, res, next) {});
 
 const port = 3000;
 app.listen(port, () => {

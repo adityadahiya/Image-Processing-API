@@ -7,16 +7,20 @@ const processImage = async (
   width: number,
   height: number
 ): Promise<string> => {
-  let filepath: string = path.join(__dirname, '../../assets/images', img + '.jpg');
+  let filepath: string = path.join(
+    __dirname,
+    '../../assets/images',
+    img + '.jpg'
+  );
   let topath: string = path.join(
     __dirname,
     '../../assets/thumbnails',
     img + width + height + '.jpg'
   );
+  if (!fs.existsSync(filepath)) {
+    throw { status: 404, error: new Error('404 - File Not Found') };
+  }
   try {
-    if (!fs.existsSync(filepath)) {
-      throw new Error('404 - File Not Found');
-    }
     if (!height || !width) {
       console.log('Using default size');
       throw new Error('Height or width parameter is incorrect');
@@ -39,12 +43,10 @@ const resize = async (
   height: number
 ): Promise<void> => {
   try {
-    await sharp(filepath)
-      .resize(width, height)
-      .toFile(topath)
-      .then((res) => {});
-  } catch (err) {
-    console.log(err);
+    await sharp(filepath).resize(width, height).toFile(topath);
+  } catch (error) {
+    console.log(error);
+    throw { status: 500, error: new Error(error.toString()) };
   }
 };
 export default processImage;
